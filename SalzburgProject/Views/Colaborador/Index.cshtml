@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Colaborador>
+
+@{
+    ViewData["Title"] = "Colaboradores";
+}
+
+<div class="container">
+    <br />
+    <h1>@ViewData["Title"]</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Novo colaborador</a>
+    </p>
+    <hr />
+    <table class="table table-striped table-hover">
+        <thead class="sucess">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                @*<th>@Html.DisplayNameFor(model => model.Endereco)</th>*@
+                <th>@Html.DisplayNameFor(model => model.Telephone)</th>
+                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(model => model.Status)</th>
+                <th></th>
+            </tr>
+        <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    @*<td>@Html.DisplayFor(modelItem => item.Endereco)</td>*@
+                    <td>@Html.DisplayFor(modelItem => item.Telephone)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+                }
+        </tbody>
+        </thead>
+    </table>
+</div>
+

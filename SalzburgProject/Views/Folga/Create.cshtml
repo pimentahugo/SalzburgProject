@@ -1,0 +1,28 @@
+﻿﻿@model SalzburgProject.Models.Folga
+
+@{
+    ViewData["Title"] = "Cadastro de colaborador";
+}
+<div class="container">
+    <br />
+    <h1>@ViewData["Title"]</h1>
+    <form asp-action="Create">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group mb-3">
+            <label asp-for="DataFolga" class="control-label"></label>
+            <input asp-for="DataFolga" type="date" class=" form-control" />
+            <span asp-validation-for="DataFolga" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Colaborador" class="control-label"></label>
+            <select asp-for="ColaboradorId" asp-items="@(new SelectList(Model.Colaborador, "Id", "Name"))" class="form-control"></select>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

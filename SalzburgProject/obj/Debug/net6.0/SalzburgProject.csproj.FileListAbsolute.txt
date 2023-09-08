@@ -1,0 +1,8 @@
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.csproj.AssemblyReference.cache
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.AssemblyInfoInputs.cache
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.AssemblyInfo.cs
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.csproj.CoreCompileInputs.cache
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.RazorAssemblyInfo.cache
+C:\Users\hugop\OneDrive\Área de Trabalho\Projeto\SalzburgProject\SalzburgProject\obj\Debug\net6.0\SalzburgProject.RazorAssemblyInfo.cs

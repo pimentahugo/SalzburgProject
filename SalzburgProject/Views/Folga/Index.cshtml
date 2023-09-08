@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Folga>
+
+@{
+    ViewData["Title"] = "Folgas";
+}
+
+<div class="container">
+    <br />
+    <h1>@ViewData["Title"]</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Nova folga</a>
+    </p>
+    <hr />
+<!-- Inclua a tabela que será usada como calendário -->
+<table id="calendar" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Evento</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var evento in Model)
+        {
+            <tr>
+                <td>@evento.DataFolga</td>
+                @*<td>@evento.Colaborador.Nome</td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var eventos = @Html.Raw(Json.Serialize(Model.Select(e => new
+            {
+            id = e.Id,
+            title = "teste",
+            start = e.DataFolga.ToString("yyyy-MM-dd"),
+            // Adicione outras propriedades de evento, se necessário
+            })));
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            events: eventos,
+            // Outras opções e configurações do FullCalendar aqui
+        });
+
+        calendar.render();
+    });
+</script>
+
