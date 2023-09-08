@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LeZrPSb+kOgc4Tj1LfFOwnysRV9UuFm2sLGHxgxGsV0=",
+  "Hash": "0mnwZXieVPzzJslmlO5eQvqf75x16d9HWaDINzi1cfA=",
   "Source": "SalzburgProject",
   "BasePath": "_content/SalzburgProject",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\hugop\\OneDrive\\Área de Trabalho\\Projeto\\SalzburgProject\\SalzburgProject\\wwwroot\\js\\pt-br.js",
+      "SourceId": "SalzburgProject",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\hugop\\OneDrive\\Área de Trabalho\\Projeto\\SalzburgProject\\SalzburgProject\\wwwroot\\",
+      "BasePath": "_content/SalzburgProject",
+      "RelativePath": "js/pt-br.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\pt-br.js"
     },
     {
       "Identity": "C:\\Users\\hugop\\OneDrive\\Área de Trabalho\\Projeto\\SalzburgProject\\SalzburgProject\\wwwroot\\js\\site.js",

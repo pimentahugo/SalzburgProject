@@ -21,6 +21,12 @@ namespace SalzburgProject.Controllers
             return View(colaboradores);
         }
 
+        public async Task<IActionResult> Detail(int id)
+        {
+            Colaborador colaborador = await _colaboradorRepository.GetByIdAsync(id);
+            return View();
+        }
+        
         public IActionResult Create()
         {
             return View();

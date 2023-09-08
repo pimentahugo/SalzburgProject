@@ -26,7 +26,7 @@ namespace SalzburgProject.Repository
 
         public async Task<IEnumerable<Folga>> GetAll()
         {
-            return await _context.Folgas.ToListAsync();
+            return await _context.Folgas.Include(folga => folga.Colaborador).ToListAsync();
         }
 
         public async Task<Folga> GetByIdAsync(int id)

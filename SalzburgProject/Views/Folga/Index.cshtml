@@ -24,7 +24,7 @@
         {
             <tr>
                 <td>@evento.DataFolga</td>
-                @*<td>@evento.Colaborador.Nome</td>*@
+                <td>@evento.Colaborador.Name</td>
             </tr>
         }
     </tbody>
@@ -33,19 +33,23 @@
 </div>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script src="~/js/pt-br.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var eventos = @Html.Raw(Json.Serialize(Model.Select(e => new
             {
             id = e.Id,
-            title = "teste",
+            title = e.Colaborador.Name,
             start = e.DataFolga.ToString("yyyy-MM-dd"),
+            //allDay = true,
             // Adicione outras propriedades de evento, se necessário
             })));
 
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridWeek',
             events: eventos,
+            locale: 'pt-br',
             // Outras opções e configurações do FullCalendar aqui
         });
 

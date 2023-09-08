@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SalzburgProject.Data;
 using SalzburgProject.Interface;
 using SalzburgProject.Models;
+using SalzburgProject.Models.Enum;
 using SalzburgProject.Repository;
 
 namespace SalzburgProject.Controllers
@@ -19,6 +20,8 @@ namespace SalzburgProject.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            //IEnumerable<FolgaViewModel> folgas = (await _folgaRepository.GetAll())
+            //                                   .Select(folga => new FolgaViewModel(folga));
             IEnumerable<Folga> folgas = await _folgaRepository.GetAll();
             return View(folgas);
         }
@@ -28,7 +31,7 @@ namespace SalzburgProject.Controllers
             IEnumerable<Colaborador> colaboradores = await _colaboradorRepository.GetAll();
 
             // Cria a SelectList para a ViewBag, usando a lista de colaboradores
-            ViewBag.ColaboradorList = new SelectList(colaboradores, "Id", "Name");
+            ViewBag.ColaboradorList = new SelectList(colaboradores.Where(p => p.Status == ColaboradorStatus.Ativo), "Id", "Name");
 
             return View();
         }

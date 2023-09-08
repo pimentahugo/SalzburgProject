@@ -3,7 +3,7 @@
 @model Colaborador
 
 @{
-    ViewData["Title"] = "Cadastro de colaborador";
+    ViewData["Title"] = "Editar colaborador";
 }
 <div class="container">
     <br />
@@ -31,7 +31,7 @@
         </div>
         <div class="form-group">
             <label asp-for="Status" class="control-label"></label>
-            @Html.DropDownListFor(model => model.Type, Html.GetEnumSelectList<ColaboradorStatus>(), "Selecione o tipo de colaborador", new { @class = "form-control" })
+            @Html.DropDownListFor(model => model.Status, Html.GetEnumSelectList<ColaboradorStatus>(), "Selecione o status do colaborador", new { @class = "form-control" })
         </div>
         <br />
         <button type="submit" class="btn btn-primary">Submit</button>
