@@ -11,11 +11,13 @@ namespace SalzburgProject.Controllers
     {
         private readonly IColaboradorRepository _colaboradorRepository;
         private readonly IChavePixRepository _chavepixRepository;
+        private readonly IFolgaRepository _folgaRepository;
 
-        public ColaboradorController(IColaboradorRepository colaboradorRepository, IChavePixRepository chavePixRepository)
+        public ColaboradorController(IColaboradorRepository colaboradorRepository, IChavePixRepository chavePixRepository, IFolgaRepository folgaRepository)
         {
             _colaboradorRepository = colaboradorRepository;
             _chavepixRepository = chavePixRepository;
+            _folgaRepository = folgaRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -26,8 +28,14 @@ namespace SalzburgProject.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            Colaborador colaborador = await _colaboradorRepository.GetByIdAsync(id);
-            return View();
+            var colaborador = await _colaboradorRepository.GetByIdAsync(id);
+            ViewBag.FolgasColaborador = await _folgaRepository.GetAllFolgasByColaborador(id);
+            if (colaborador == null)
+            {
+                View("Error");
+            }
+
+            return View(colaborador);
         }
 
         public IActionResult Create()

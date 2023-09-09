@@ -45,5 +45,9 @@ namespace SalzburgProject.Repository
             _context.Update(Folga);
             return Save();
         }
+        public async Task<IEnumerable<Folga>> GetAllFolgasByColaborador(int id)
+        {
+            return await _context.Folgas.Include(folga => folga.Colaborador).Where(p => p.ColaboradorId == id).ToListAsync();
+        }
     }
 }
