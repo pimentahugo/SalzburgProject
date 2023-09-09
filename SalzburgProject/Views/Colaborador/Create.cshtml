@@ -11,29 +11,72 @@
     <form asp-action="Create">
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group mb-3">
-            <label asp-for="Name" class="control-label"></label>
+            <label asp-for="Name" class="control-label">Nome</label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-@*        <div class="form-group mb-3">
-            <label asp-for="Endereco" class="control-label"></label>
-            <input asp-for="Endereco" class="form-control" />
-            <span asp-validation-for="Endereco" class="text-danger"></span>
-        </div>*@
         <div class="form-group mb-3">
-            <label asp-for="Telephone" class="control-label"></label>
+            <label asp-for="Telephone" class="control-label">Telefone</label>
             <input asp-for="Telephone" class="form-control" />
             <span asp-validation-for="Telephone" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Telephone" class="control-label"></label>
+            <label asp-for="Type" class="control-label">Tipo de colaborador</label>
             @Html.DropDownListFor(model => model.Telephone, Html.GetEnumSelectList<ColaboradorTipo>(), "Selecione o tipo de colaborador", new { @class = "form-control" })
         </div>
-        <input type="hidden" asp-for="Status" value="1" />
+        <br/>
+        <div style="padding-bottom:20px">
+            <button type="button" class="btn btn-primary" onclick="AddRow()">Adicionar chave pix</button>
+        </div>
+
+        <div id="dataTable">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Chave</th>
+                    </tr>
+                </thead>
+                <tbody id="ChavesPix" data-count="0">
+                </tbody>
+            </table>
+        </div>
+
         <br />
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        /*
+             . Hidding table on load
+        */
+        document.getElementById('dataTable').style.display = 'none';
+
+        function AddRow() {
+            var countVal = parseInt($('#ChavesPix').attr('data-count'));
+            var html = '';
+            html += '<tr>';
+            html += '<td><select name="ChavesPix[' + countVal + '].Type" class="form-control">';
+            html += '<option value="0">Selecione um tipo de chave pix</option>';
+            html += '<option value="1">CPF ou CNPJ</option>';
+            html += '<option value="2">Telefone</option>';
+            html += '<option value="3">E-mail</option>';
+            html += '<option value="4">Chave aleatoria</option>';
+            html += '</select></td>';
+            html += '<td><input type="text" name="ChavesPix[' + countVal + '].KeyPix" class="form-control"/></td>';
+            html += '</tr>';
+
+            $('#ChavesPix').append(html);
+            countVal += 1;
+            $('#ChavesPix').attr('data-count', countVal);
+            /*
+               . Showing table when adding item into
+            */
+            document.getElementById('dataTable').style.display = 'block';
+
+        }
+    </script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

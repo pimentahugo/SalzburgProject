@@ -1,4 +1,5 @@
-﻿using SalzburgProject.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalzburgProject.Data;
 using SalzburgProject.Interface;
 using SalzburgProject.Models;
 
@@ -6,15 +7,16 @@ namespace SalzburgProject.Repository
 {
     public class ChavePixRepository : IChavePixRepository
     {
-        private readonly ApplicationDbContext _chavePixRepository;
+        private readonly ApplicationDbContext _context;
         public ChavePixRepository(ApplicationDbContext context)
         {
-            _chavePixRepository = context;
+            _context = context;
         }
 
         public bool Add(ChavePix chave)
         {
-            throw new NotImplementedException();
+            _context.Add(chave);
+            return Save();
         }
 
         public bool Delete(ChavePix chave)
@@ -34,7 +36,8 @@ namespace SalzburgProject.Repository
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool Update(ChavePix chave)

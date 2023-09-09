@@ -3,16 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using SalzburgProject.Data;
 using SalzburgProject.Interface;
 using SalzburgProject.Models;
+using SalzburgProject.Models.Enum;
 
 namespace SalzburgProject.Controllers
 {
     public class ColaboradorController : Controller
     {
         private readonly IColaboradorRepository _colaboradorRepository;
+        private readonly IChavePixRepository _chavepixRepository;
 
-        public ColaboradorController(IColaboradorRepository colaboradorRepository)
+        public ColaboradorController(IColaboradorRepository colaboradorRepository, IChavePixRepository chavePixRepository)
         {
             _colaboradorRepository = colaboradorRepository;
+            _chavepixRepository = chavePixRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -26,7 +29,7 @@ namespace SalzburgProject.Controllers
             Colaborador colaborador = await _colaboradorRepository.GetByIdAsync(id);
             return View();
         }
-        
+
         public IActionResult Create()
         {
             return View();
@@ -34,13 +37,22 @@ namespace SalzburgProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Colaborador colaborador)
+        public async Task<IActionResult> Create(
+        [Bind("Id,Name,Telephone,Type, ChavesPix")] SalzburgProject.Models.Colaborador colaborador)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(colaborador);
             }
+            colaborador.Status = ColaboradorStatus.Ativo; //criar sempre como ativo
+
             _colaboradorRepository.Add(colaborador);
+            //Add ChavePix to Colaborador
+            foreach (var item in colaborador.ChavesPix)
+            {
+                item.Id = null;
+                _chavepixRepository.Add(item);
+            }
             return RedirectToAction("Index");
         }
 
@@ -48,7 +60,7 @@ namespace SalzburgProject.Controllers
         {
             var colaborador = await _colaboradorRepository.GetByIdAsync(id);
 
-            if(colaborador == null)
+            if (colaborador == null)
             {
                 View("Error");
             }
