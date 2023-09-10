@@ -22,6 +22,10 @@ namespace SalzburgProject.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (TempData.ContainsKey("successMessage"))
+            {
+                ViewBag.SuccessMessage = TempData["successMessage"].ToString();
+            }
             IEnumerable<Colaborador> colaboradores = await _colaboradorRepository.GetAll();
             return View(colaboradores);
         }
@@ -32,7 +36,7 @@ namespace SalzburgProject.Controllers
             ViewBag.FolgasColaborador = await _folgaRepository.GetAllFolgasByColaborador(id);
             if (colaborador == null)
             {
-                View("Error");
+                return View("Error");
             }
 
             return View(colaborador);
@@ -61,14 +65,25 @@ namespace SalzburgProject.Controllers
 
             colaborador.Status = ColaboradorStatus.Ativo; //criar sempre como ativo
 
-            _colaboradorRepository.Add(colaborador);
-            //Add ChavePix to Colaborador
-            foreach (var item in colaborador.ChavesPix)
+            try
             {
-                item.Id = null;
-                _chavepixRepository.Add(item);
+                _colaboradorRepository.Add(colaborador);
+                //Add ChavePix to Colaborador
+                foreach (var item in colaborador.ChavesPix)
+                {
+                    item.Id = null;
+                    _chavepixRepository.Add(item);
+                }
+
+                await _colaboradorRepository.Commit();
+            } catch(Exception e)
+            {
+                ModelState.AddModelError(string.Empty, "Ocorreu um erro durante a criação: " + e.Message);
+                _colaboradorRepository.Rollback();
+                return View(colaborador);
             }
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new { successMessage = "Colaborador criado com sucesso."});
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -87,7 +102,7 @@ namespace SalzburgProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Colaborador colaborador)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(colaborador);
             }

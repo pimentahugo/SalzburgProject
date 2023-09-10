@@ -1,15 +1,16 @@
 ﻿using SalzburgProject.Models;
+using SalzburgProject.Repository.Astraction;
 
 namespace SalzburgProject.Interface
 {
-    public interface IFolgaRepository
+    public interface IFolgaRepository : IUnitOfWork
     {
         Task<IEnumerable<Folga>> GetAll();
         Task<IEnumerable<Folga>> GetAllFolgasByColaborador(int id);
         Task<Folga> GetByIdAsync(int id);
-        bool Add(Folga folga);
-        bool Update(Folga folga);
-        bool Delete(Folga folga);
-        bool Save();
+        Task Add(Folga folga);
+        void Update(Folga folga);
+        void Delete(Folga folga);
+        //bool Save();
     }
 }

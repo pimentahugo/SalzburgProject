@@ -13,13 +13,13 @@ namespace SalzburgProject.Repository
             _context = context;
         }
 
-        public bool Add(ChavePix chave)
+        public async Task Add(ChavePix chave)
         {
-            _context.Add(chave);
-            return Save();
+            await _context.AddAsync(chave);
+            //return Save();
         }
 
-        public bool Delete(ChavePix chave)
+        public void Delete(ChavePix chave)
         {
             throw new NotImplementedException();
         }
@@ -34,15 +34,24 @@ namespace SalzburgProject.Repository
             throw new NotImplementedException();
         }
 
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
+        //public bool Save()
+        //{
+        //    var saved = _context.SaveChanges();
+        //    return saved > 0 ? true : false;
+        //}
 
-        public bool Update(ChavePix chave)
+        public void Update(ChavePix chave)
         {
             throw new NotImplementedException();
+        }
+        public async Task<bool> Commit()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public Task Rollback()
+        {
+            return Task.CompletedTask;
         }
     }
 }

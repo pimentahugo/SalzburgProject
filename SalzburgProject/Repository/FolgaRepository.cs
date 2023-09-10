@@ -12,16 +12,16 @@ namespace SalzburgProject.Repository
         {
             _context = context;
         }
-        public bool Add(Folga folga)
+        public async Task Add(Folga folga)
         {
-            _context.Add(folga);
-            return Save();
+           await _context.AddAsync(folga);
+            //return Save();
         }
 
-        public bool Delete(Folga folga)
+        public void Delete(Folga folga)
         {
             _context.Remove(folga);
-            return Save();
+            //return Save();
         }
 
         public async Task<IEnumerable<Folga>> GetAll()
@@ -34,20 +34,30 @@ namespace SalzburgProject.Repository
             return await _context.Folgas.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
+        //public bool Save()
+        //{
+        //    var saved = _context.SaveChanges();
+        //    return saved > 0 ? true : false;
+        //}
 
-        public bool Update(Folga Folga)
+        public void Update(Folga Folga)
         {
             _context.Update(Folga);
-            return Save();
+            //return Save();
         }
         public async Task<IEnumerable<Folga>> GetAllFolgasByColaborador(int id)
         {
             return await _context.Folgas.Include(folga => folga.Colaborador).Where(p => p.ColaboradorId == id).ToListAsync();
         }
+        public async Task<bool> Commit()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public Task Rollback()
+        {
+            return Task.CompletedTask;
+        }
+
     }
 }

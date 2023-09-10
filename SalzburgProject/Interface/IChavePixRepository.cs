@@ -1,14 +1,15 @@
 ﻿using SalzburgProject.Models;
+using SalzburgProject.Repository.Astraction;
 
 namespace SalzburgProject.Interface
 {
-    public interface IChavePixRepository
+    public interface IChavePixRepository : IUnitOfWork
     {
         Task<IEnumerable<ChavePix>> GetAll();
         Task<ChavePix> GetByIdAsync(int id);
-        bool Add(ChavePix folga);
-        bool Update(ChavePix folga);
-        bool Delete(ChavePix folga);
-        bool Save();
+        Task Add(ChavePix folga);
+        void Update(ChavePix folga);
+        void Delete(ChavePix folga);
+        //bool Save();
     }
 }

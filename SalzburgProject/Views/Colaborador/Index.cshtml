@@ -11,6 +11,12 @@
         <a asp-action="Create" class="btn btn-primary">Novo colaborador</a>
     </p>
     <hr />
+    @if (!string.IsNullOrEmpty(ViewBag.successMessage))
+    {
+        <div class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
     <table class="table table-striped table-hover">
         <thead class="sucess">
             <tr>
