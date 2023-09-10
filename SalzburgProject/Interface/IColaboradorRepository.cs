@@ -10,5 +10,6 @@ namespace SalzburgProject.Interface
         bool Update(Colaborador colaborador);
         bool Delete(Colaborador colaborador);
         bool Save();
+        bool CPFExist(string cpf);
     }
 }

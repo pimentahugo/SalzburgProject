@@ -46,12 +46,19 @@ namespace SalzburgProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-        [Bind("Id,Name,Telephone,Type, ChavesPix")] SalzburgProject.Models.Colaborador colaborador)
+        [Bind("Id,Name,CPF,Telephone, Type, ChavesPix")] SalzburgProject.Models.Colaborador colaborador)
         {
             if (!ModelState.IsValid)
             {
                 return View(colaborador);
             }
+
+            if (_colaboradorRepository.CPFExist(colaborador.CPF))
+            {
+                ModelState.AddModelError("CPF", "CPF informado já está cadastrado em nosso banco de dados.");
+                return View(colaborador);
+            }
+
             colaborador.Status = ColaboradorStatus.Ativo; //criar sempre como ativo
 
             _colaboradorRepository.Add(colaborador);

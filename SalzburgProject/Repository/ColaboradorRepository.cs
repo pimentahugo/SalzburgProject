@@ -45,5 +45,10 @@ namespace SalzburgProject.Repository
             _context.Update(colaborador);
             return Save();
         }
+
+        public bool CPFExist(string cpf)
+        {
+            return _context.Colaboradores.Any(p => p.CPF == cpf);
+        }
     }
 }

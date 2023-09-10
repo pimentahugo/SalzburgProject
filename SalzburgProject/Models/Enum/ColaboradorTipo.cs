@@ -1,4 +1,7 @@
-﻿namespace SalzburgProject.Models.Enum
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace SalzburgProject.Models.Enum
 {
     public enum ColaboradorTipo
     {
