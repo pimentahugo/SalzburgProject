@@ -15,13 +15,11 @@ namespace SalzburgProject.Repository
         public async Task Add(Folga folga)
         {
            await _context.AddAsync(folga);
-            //return Save();
         }
 
         public void Delete(Folga folga)
         {
             _context.Remove(folga);
-            //return Save();
         }
 
         public async Task<IEnumerable<Folga>> GetAll()
@@ -34,16 +32,9 @@ namespace SalzburgProject.Repository
             return await _context.Folgas.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        //public bool Save()
-        //{
-        //    var saved = _context.SaveChanges();
-        //    return saved > 0 ? true : false;
-        //}
-
         public void Update(Folga Folga)
         {
             _context.Update(Folga);
-            //return Save();
         }
         public async Task<IEnumerable<Folga>> GetAllFolgasByColaborador(int id)
         {

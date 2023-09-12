@@ -1,8 +1,19 @@
 ﻿@model IEnumerable<Folga>
 
 @{
+    System.Globalization.CultureInfo cultureInfo = new System.Globalization.CultureInfo("pt-BR");
     ViewData["Title"] = "Folgas";
 }
+<style>
+    #calendar { height: 300px; }
+    a.fc-col-header-cell-cushion {
+        color: black;
+    }
+
+    .fc .fc-daygrid-day.fc-day-today {
+        background-color: #3788d847!important;
+    }
+</style>
 
 <div class="container">
     <br />
@@ -11,29 +22,84 @@
         <a asp-action="Create" class="btn btn-primary">Nova folga</a>
     </p>
     <hr />
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["Error"]
+        </div>
+    }
 <!-- Inclua a tabela que será usada como calendário -->
-<table id="calendar" class="table table-bordered">
+<div id="calendar"></div>
+<br />
+    <br />
+<table id="original-table" class="table table-bordered">
     <thead>
         <tr>
-            <th>Data</th>
-            <th>Evento</th>
+            <th>Data da folga</th>
+            <th>Dia da semana</th>
+            <th>Colaborador</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var evento in Model)
         {
             <tr>
-                <td>@evento.DataFolga</td>
+                <td>@evento.DataFolga.ToString("dd/MM/yyyy")</td>
+                <td>@evento.DataFolga.ToString("dddd", cultureInfo)</td>
                 <td>@evento.Colaborador.Name</td>
+                    <td>
+                        @*<a asp-action="Detail" asp-route-id="@evento.Id" class="btn btn-sm btn-info"><i class="bi bi-pen"></i></a>*@
+                        <a data-item-id="@evento.Id" data-bs-toggle="modal" data-bs-target="#excluirFolgaModal" asp-route-id="@evento.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
             </tr>
         }
     </tbody>
 </table>
+    <!-- Modal -->
+    <div class="modal fade" id="excluirFolgaModal" tabindex="-1" aria-labelledby="excluirFolgaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="excluirPixModalLabel">Confirmar exclusão de folga</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Deseja excluir a folga selecionada?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
+                    <!-- Formulário para enviar a solicitação de exclusão -->
+                    <form method="post" asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="folgaId" value="" />
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <script src="~/js/pt-br.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#excluirFolgaModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Botão que acionou a modal
+            var itemId = button.data('item-id'); // Obtém o valor do atributo data-item-id do botão
+            $('#folgaId').attr("value", itemId); // Define o valor do input itemId com o valor obtido
+        });
+    });
+
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var eventos = @Html.Raw(Json.Serialize(Model.Select(e => new

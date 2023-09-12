@@ -22,7 +22,7 @@ namespace SalzburgProject.Controllers
         {
             //IEnumerable<FolgaViewModel> folgas = (await _folgaRepository.GetAll())
             //                                   .Select(folga => new FolgaViewModel(folga));
-            IEnumerable<Folga> folgas = await _folgaRepository.GetAll();
+            IEnumerable<Folga> folgas = (await _folgaRepository.GetAll()).OrderBy(p => p.DataFolga);
             return View(folgas);
         }
 
@@ -44,8 +44,45 @@ namespace SalzburgProject.Controllers
             {
                 return View(folga);
             }
-            _folgaRepository.Add(folga);
+            try
+            {
+                _folgaRepository.Add(folga);
+                _folgaRepository.Commit();
+                TempData["Success"] = "Folga criada para o colaborador com sucesso.";
+            } catch(Exception e)
+            {
+                TempData["Error"] = e.Message;
+                return View(folga);
+            }
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var folga = await _folgaRepository.GetByIdAsync(id);
+            try
+            {
+                if (folga != null)
+                {
+                    _folgaRepository.Delete(folga);
+                    await _folgaRepository.Commit();
+                    TempData["Success"] = "Folga excluída com sucesso!";
+                }
+                else
+                {
+                    TempData["Error"] = "Folga não encontrada.";
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = "Ocorreu um erro durante o processo: " + e.Message;
+                await _folgaRepository.Rollback();
+            }
+
+            return RedirectToAction("Index");
+
         }
     }
 }
