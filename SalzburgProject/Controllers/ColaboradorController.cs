@@ -179,7 +179,7 @@ namespace SalzburgProject.Controllers
                 }
 
                 await _chavepixRepository.Commit();
-                TempData["Success"] = $"Colaborador {colaborador.Name} criado com sucesso!";
+                TempData["Success"] = $"Chave pix adicionada ao colaborador {colaborador.Name} com sucesso!";
             }
             catch (Exception e)
             {
@@ -188,7 +188,7 @@ namespace SalzburgProject.Controllers
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Detail", colaborador);
         }
         public async Task<IActionResult> Delete(int id)
         {
