@@ -1,4 +1,5 @@
 ﻿@using SalzburgProject.Models.Enum
+
 @model Colaborador
 
 @{
@@ -7,16 +8,29 @@
 }
 
 <div class="container">
-    <br />
-    <h2>@ViewData["Title"]</h2>
-    <hr />
-    <br />
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card mb-12">
-                <div class="card-header">Detalhes do colaborador</div>
-                <div class="card-body">
-                    <form>
+    <form method="post">
+        <input type="hidden" asp-for="Id" value="@Model.Id">
+        <br />
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+        <br />
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["Error"]
+            </div>
+        }
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card mb-12">
+                    <div class="card-header">Detalhes do colaborador</div>
+                    <div class="card-body">
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label asp-for="Name" class="control-label">Nome</label>
@@ -35,49 +49,194 @@
                                 <input asp-for="Telephone" class="form-control" />
                                 <span asp-validation-for="Telephone" class="text-danger"></span>
                             </div>
-                            <div class="col-md-6"> 
+                            <div class="col-md-6">
                                 <label asp-for="Type" class="control-label">Tipo de colaborador</label>
-                                @Html.DropDownListFor(model => model.Telephone, Html.GetEnumSelectList<ColaboradorTipo>(), "Selecione o tipo de colaborador", new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.Type, Html.GetEnumSelectList<ColaboradorTipo>(), new { @class = "form-control" })
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="button">Save changes</button>
-                    </form>
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="control-label"></label>
+                                @Html.DropDownListFor(model => model.Status, Html.GetEnumSelectList<ColaboradorStatus>(), "Selecione o status do colaborador", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" asp-controller="Colaborador" asp-action="Detail">Salvar alterações</button>
+                    </div>
                 </div>
             </div>
-            <br />
-            <br />
-            <div class="card mb-12">
-                <div class="card-header">Folgas do colaborador</div>
-                <div class="card-body text-center">
-                    @if(ViewBag.FolgasColaborador == null) {
-                        <strong>Não há folgas lançadas para o colaborador.</strong>
-                    } else {
-                    <table class="table table-striped table-hover">
-                        <thead class="sucess">
-                            <tr>
-                                <th>*</th>
-                                <th>Data da folga</th>
-                                <th>Dia da semana</th>
-                            </tr>
-                        <tbody>
-                                @{
-                                    int contador = 1;
-                                    foreach (var item in ViewBag.FolgasColaborador)
-                                {
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-12">
+                    <div class="card-header">Chaves pix</div>
+                    <div class="card-body text-center">
+                        @if (ViewBag.ChavesPix.Count == 0)
+                        {
+                            <strong>Não há chaves pix cadastradas para o colaborador.</strong>
+                        }
+                        else
+                        {
+                            <table class="table table-striped table-hover">
+                                <thead class="success">
                                     <tr>
-                                        <td>@contador</td>
-                                        <td>@item.DataFolga.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.DataFolga.ToString("dddd")</td>
+                                        <th>*</th>
+                                        <th>Tipo da chave</th>
+                                        <th>Código da chave cadastrada</th>
+                                        <th></th>
                                     </tr>
-                                        contador++;
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int contador = 1;
+                                        foreach (var item in ViewBag.ChavesPix)
+                                        {
+                                            <tr>
+                                                <td>@contador</td>
+                                                <td>@Enum.GetName(typeof(TipoPix), (int)item.Type)</td>
+                                                <td>@item.KeyPix</td>
+                                                <td>
+                                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></a>
+                                                    <a data-bs-toggle="modal" data-bs-target="#excluirPixModal" data-item-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                            contador++;
+                                        }
                                     }
-                               }
-                        </tbody>
-                        </thead>
-                    </table>
-                    }
+                                </tbody>
+                            </table>
+                        }
+                        <div id="dataTable">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Chave</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ChavesPix" data-count="0">
+                                </tbody>
+                            </table>
+                        </div>
+                        <button id="createKeyPix" type="submit" class="btn btn-primary d-none" asp-controller="Colaborador" asp-action="CreateKeyPix">Salvar chave pix</button>
+                        <button type="button" class="btn btn-primary" onclick="AddRow()">Adicionar chave pix</button>
+                    </div>
                 </div>
-
             </div>
+            <div class="col-md-6">
+                <div class="card mb-12">
+                    <div class="card-header">Folgas do colaborador</div>
+                    <div class="card-body text-center">
+                        @if (ViewBag.FolgasColaborador.Count == 0)
+                        {
+                            <strong>Não há folgas lançadas para o colaborador.</strong>
+                        }
+                        else
+                        {
+                            <table class="table table-striped table-hover">
+                                <thead class="success">
+                                    <tr>
+                                        <th>*</th>
+                                        <th>Data da folga</th>
+                                        <th>Dia da semana</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int contador = 1;
+                                        foreach (var item in ViewBag.FolgasColaborador)
+                                        {
+                                            <tr>
+                                                <td>@contador</td>
+                                                <td>@item.DataFolga.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.DataFolga.ToString("dddd")</td>
+                                            </tr>
+                                            contador++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<br />
+<!-- Modal -->
+<div class="modal fade" id="excluirPixModal" tabindex="-1" aria-labelledby="excluirPixModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excluirPixModalLabel">Confirmar exclusão de chave pix</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Deseja excluir a chave pix selecionada?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <!-- Formulário para enviar a solicitação de exclusão -->
+                <form method="post" asp-action="DeleteKeyPix" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="keyId" value="" />
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#excluirPixModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Botão que acionou a modal
+            var itemId = button.data('item-id'); // Obtém o valor do atributo data-item-id do botão
+            $('#keyId').attr("value", itemId); // Define o valor do input itemId com o valor obtido
+        });
+    });
+
+</script>
+<script>
+    /*
+         . Hidding table on load
+    */
+    document.getElementById('dataTable').style.display = 'none';
+
+    function AddRow() {
+        var countVal = parseInt($('#ChavesPix').attr('data-count'));
+        var html = '';
+        html += '<tr>';
+        html += '<td><select name="ChavesPix[' + countVal + '].Type" class="form-control">';
+        html += '<option value="0">Selecione um tipo de chave pix</option>';
+        html += '<option value="1">CPF ou CNPJ</option>';
+        html += '<option value="2">Telefone</option>';
+        html += '<option value="3">E-mail</option>';
+        html += '<option value="4">Chave aleatoria</option>';
+        html += '</select></td>';
+        html += '<td><input type="text" name="ChavesPix[' + countVal + '].KeyPix" class="form-control"/></td>';
+        html += '</tr>';
+
+        $('#ChavesPix').append(html);
+        countVal += 1;
+        $('#ChavesPix').attr('data-count', countVal);
+        /*
+           . Showing table when adding item into
+        */
+        document.getElementById('dataTable').style.display = 'block';
+        if (countVal > 0) {
+            $('#createKeyPix').removeClass('d-none');
+        } else {
+            $('#createKeyPix').addClass('d-none');
+        }
+
+    }
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

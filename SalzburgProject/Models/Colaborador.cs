@@ -21,8 +21,8 @@ namespace SalzburgProject.Models
         public string? Telephone { get; set; }
 
         [Required(ErrorMessage = "Por favor, selecione um tipo de colaborador.")]
-        [EnumDataType(typeof(ColaboradorTipo), ErrorMessage = "Por favor, selecione um tipo de colaborador.")]
-        [Display(Name = "Cargo")]
+        //[EnumDataType(typeof(ColaboradorTipo), ErrorMessage = "Por favor, selecione um tipo de colaborador.")]
+        //[Display(Name = "Cargo")]
         public ColaboradorTipo Type { get; set; }
         public ColaboradorStatus Status { get; set; }
         public List<ChavePix>? ChavesPix { get; set; }

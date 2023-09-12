@@ -29,6 +29,7 @@
         <div class="form-group">
             <label asp-for="Type" class="control-label">Tipo de colaborador</label>
             @Html.DropDownListFor(model => model.Type, Html.GetEnumSelectList<ColaboradorTipo>(), "Selecione um tipo de colaborador", new { @class = "form-control" })
+            <span asp-validation-for="Type" class="text-danger"></span>
         </div>
         <br/>
         <div style="padding-bottom:20px">

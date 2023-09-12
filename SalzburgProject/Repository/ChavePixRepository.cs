@@ -21,17 +21,22 @@ namespace SalzburgProject.Repository
 
         public void Delete(ChavePix chave)
         {
-            throw new NotImplementedException();
+            _context.Remove(chave);
         }
 
-        public Task<IEnumerable<ChavePix>> GetAll()
+        public async Task<IEnumerable<ChavePix>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.ChavesPix.ToListAsync();
         }
 
-        public Task<ChavePix> GetByIdAsync(int id)
+        public async Task<IEnumerable<ChavePix>> GetAllByColaborador(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ChavesPix.Where(p => p.ColaboradorId == id).ToListAsync();
+        }
+
+        public async Task<ChavePix> GetByIdAsync(int id)
+        {
+            return await _context.ChavesPix.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         //public bool Save()

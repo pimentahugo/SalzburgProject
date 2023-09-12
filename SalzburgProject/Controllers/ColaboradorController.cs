@@ -22,24 +22,31 @@ namespace SalzburgProject.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (TempData.ContainsKey("successMessage"))
-            {
-                ViewBag.SuccessMessage = TempData["successMessage"].ToString();
-            }
             IEnumerable<Colaborador> colaboradores = await _colaboradorRepository.GetAll();
             return View(colaboradores);
         }
 
         public async Task<IActionResult> Detail(int id)
         {
-            var colaborador = await _colaboradorRepository.GetByIdAsync(id);
-            ViewBag.FolgasColaborador = await _folgaRepository.GetAllFolgasByColaborador(id);
-            if (colaborador == null)
+            try
             {
-                return View("Error");
-            }
+                var colaborador = await _colaboradorRepository.GetByIdAsync(id);
+                if (colaborador == null)
+                {
+                    TempData["Error"] = "Colaborador não encontrado em nossa base de dados.";
+                    return RedirectToAction("Index");
 
-            return View(colaborador);
+                }
+                ViewBag.FolgasColaborador = await _folgaRepository.GetAllFolgasByColaborador(id);
+                ViewBag.ChavesPix = await _chavepixRepository.GetAllByColaborador(id);
+
+                return View(colaborador);
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = "Não foi possível carregar as informações do colaborador: " + e.Message;
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult Create()
@@ -67,23 +74,27 @@ namespace SalzburgProject.Controllers
 
             try
             {
-                _colaboradorRepository.Add(colaborador);
+                await _colaboradorRepository.Add(colaborador);
                 //Add ChavePix to Colaborador
-                foreach (var item in colaborador.ChavesPix)
+                if (colaborador.ChavesPix != null)
                 {
-                    item.Id = null;
-                    _chavepixRepository.Add(item);
+                    foreach (var item in colaborador.ChavesPix)
+                    {
+                        await _chavepixRepository.Add(item);
+                    }
                 }
 
                 await _colaboradorRepository.Commit();
-            } catch(Exception e)
+                TempData["Success"] = $"Colaborador {colaborador.Name} criado com sucesso!";
+            }
+            catch (Exception e)
             {
-                ModelState.AddModelError(string.Empty, "Ocorreu um erro durante a criação: " + e.Message);
-                _colaboradorRepository.Rollback();
-                return View(colaborador);
+                TempData["Error"] = "Ocorreu um erro durante a criação: " + e.Message;
+                await _colaboradorRepository.Rollback();
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index", new { successMessage = "Colaborador criado com sucesso."});
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -110,6 +121,75 @@ namespace SalzburgProject.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Detail(Colaborador colaborador)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(colaborador);
+            }
+            try
+            {
+                _colaboradorRepository.Update(colaborador);
+                await _colaboradorRepository.Commit();
+                TempData["Success"] = "Colaborador atualizado com sucesso!";
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(string.Empty, "Ocorreu um erro durante a atualização: " + e.Message);
+                await _colaboradorRepository.Rollback();
+                return View(colaborador);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateKeyPix(
+        [Bind("Id,Name,CPF,Telephone, Type, ChavesPix")] Colaborador colaborador)
+        {
+            if (colaborador == null)
+            {
+                return View(colaborador);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(colaborador);
+            }
+
+            try
+            {
+                //Add ChavePix to Colaborador
+                if (colaborador.ChavesPix != null)
+                {
+                    foreach (var item in colaborador.ChavesPix)
+                    {
+                        var chavePix = new ChavePix
+                        {
+                            Type = item.Type,
+                            KeyPix = item.KeyPix,
+                            ColaboradorId = colaborador.Id,
+                            //Colaborador = colaborador
+                        };
+                        await _chavepixRepository.Add(chavePix);
+                    }
+                }
+
+                await _chavepixRepository.Commit();
+                TempData["Success"] = $"Colaborador {colaborador.Name} criado com sucesso!";
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = "Ocorreu um erro durante a criação: " + e.Message;
+                await _chavepixRepository.Rollback();
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Index");
+        }
         public async Task<IActionResult> Delete(int id)
         {
             var colaborador = await _colaboradorRepository.GetByIdAsync(id);
@@ -132,6 +212,40 @@ namespace SalzburgProject.Controllers
             }
             _colaboradorRepository.Delete(colaborador);
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Error(ErrorViewModel error)
+        {
+            return View(error);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteKeyPix(int id)
+        {
+            var chavePix = await _chavepixRepository.GetByIdAsync(id);
+            try
+            {
+                if (chavePix != null)
+                {
+                    _chavepixRepository.Delete(chavePix);
+                    await _chavepixRepository.Commit();
+                    TempData["Success"] = "Chave Pix excluída com sucesso!";
+                }
+                else
+                {
+                    TempData["Error"] = "Chave Pix não encontrada.";
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = "Ocorreu um erro durante a criação: " + e.Message;
+                await _colaboradorRepository.Rollback();
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Detail", new { id = chavePix.ColaboradorId });
+
         }
 
     }

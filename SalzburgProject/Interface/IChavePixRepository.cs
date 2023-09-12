@@ -7,9 +7,10 @@ namespace SalzburgProject.Interface
     {
         Task<IEnumerable<ChavePix>> GetAll();
         Task<ChavePix> GetByIdAsync(int id);
-        Task Add(ChavePix folga);
-        void Update(ChavePix folga);
-        void Delete(ChavePix folga);
+        Task Add(ChavePix chave);
+        Task<IEnumerable<ChavePix>> GetAllByColaborador(int id);
+        void Update(ChavePix chave);
+        void Delete(ChavePix chave);
         //bool Save();
     }
 }

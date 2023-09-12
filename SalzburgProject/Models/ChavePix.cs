@@ -8,13 +8,13 @@ namespace SalzburgProject.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required]
-        public TipoPix? Type { get; set; }
+        public TipoPix Type { get; set; }
         [MaxLength(32)]
         [Required]
-        public string? KeyPix { get; set; }
-        public int? ColaboradorId { get; set; }
+        public string KeyPix { get; set; }
+        public int ColaboradorId { get; set; }
         public Colaborador? Colaborador { get; set; }
     }
 }
