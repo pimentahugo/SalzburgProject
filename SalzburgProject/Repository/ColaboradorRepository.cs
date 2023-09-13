@@ -34,11 +34,6 @@ namespace SalzburgProject.Repository
             return await _context.Colaboradores.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        //public bool Save()
-        //{
-        //    var saved = _context.SaveChanges();
-        //    return saved > 0 ? true : false;
-        //}
 
         public async Task<bool> Commit()
         {
@@ -48,7 +43,6 @@ namespace SalzburgProject.Repository
         public void Update(Colaborador colaborador)
         {
             _context.Update(colaborador);
-            //return Save();
         }
 
         public bool CPFExist(string cpf)

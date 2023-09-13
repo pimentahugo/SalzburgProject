@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IColaboradorRepository, ColaboradorRepository>();
 builder.Services.AddScoped<IFolgaRepository, FolgaRepository>();
 builder.Services.AddScoped<IChavePixRepository, ChavePixRepository>();
+builder.Services.AddScoped<ICustoRepository, CustoRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

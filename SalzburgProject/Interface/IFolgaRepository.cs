@@ -11,6 +11,6 @@ namespace SalzburgProject.Interface
         Task Add(Folga folga);
         void Update(Folga folga);
         void Delete(Folga folga);
-        //bool Save();
+
     }
 }

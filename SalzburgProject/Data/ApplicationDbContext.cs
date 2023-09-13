@@ -11,6 +11,11 @@ namespace SalzburgProject.Data
         public DbSet<Colaborador> Colaboradores { get; set; }
         public DbSet<Folga> Folgas { get; set; }
         public DbSet<ChavePix> ChavesPix { get; set; }
+        public DbSet<Custo> Custos { get; set; }
 
+        internal Task<Custo> FirstOrDefaultAsync(Func<object, bool> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
