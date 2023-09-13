@@ -10,8 +10,10 @@ namespace SalzburgProject.Models
 
         [Required]
         [StringLength(255)]
+        [Display(Name = "Descrição do custo")]
         public string Name { get; set; }
 
+        [Display(Name = "Tipo de custo")]
         [Required(ErrorMessage = "Por favor, selecione um tipo de despesa.")]
         [EnumDataType(typeof(ColaboradorTipo), ErrorMessage = "Por favor, selecione um tipo de despesa.")]
         public TipoCusto TipoCusto { get; set; }

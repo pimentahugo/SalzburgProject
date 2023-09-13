@@ -29,9 +29,9 @@ namespace SalzburgProject.Repository
             _context.Remove(custo);
         }
 
-        public Task<IEnumerable<Custo>> GetAll()
+        public async Task<IEnumerable<Custo>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Custos.ToListAsync();
         }
 
         public async Task<Custo> GetByIdAsync(int id)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalzburgProject.Interface;
+using SalzburgProject.Models;
 
 namespace SalzburgProject.Controllers
 {
@@ -11,9 +12,10 @@ namespace SalzburgProject.Controllers
         {
             _custoRepository = custoRepository;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<Custo> custos = await _custoRepository.GetAll();
+            return View(custos);
         }
     }
 }
