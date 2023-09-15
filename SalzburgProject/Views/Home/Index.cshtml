@@ -1,10 +1,107 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<dynamic>
 
 <div class="container">
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <br/>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Relatório de Custos por Tipo</h2>
+            <canvas id="chartCustosPorTipo" width="400" height="200"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h2>Relatório de Custos por Mês</h2>
+            <canvas id="chartCustosPorMes" width="400" height="200"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h2>Relatório de Folgas por dia da semana</h2>
+            <canvas id="chartFolgaPorDia" width="400" height="200"></canvas>
+        </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráfico de Custos por Tipo
+    var ctxCustosPorTipo = document.getElementById('chartCustosPorTipo').getContext('2d');
+    var chartDataCustosPorTipo = {
+        labels: @Html.Raw(Json.Serialize(ViewBag.ChartLabelsCustosPorTipo)),
+        datasets: [{
+            label: 'Total por tipo de custo',
+            data: @Html.Raw(Json.Serialize(ViewBag.ChartDataCustosPorTipo)),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de fundo
+            borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda
+            borderWidth: 1
+        }]
+    };
+
+    var myChartCustosPorTipo = new Chart(ctxCustosPorTipo, {
+        type: 'bar', // Tipo de gráfico (pode ser 'bar', 'line', 'pie', etc.)
+        data: chartDataCustosPorTipo,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de Custos por Mês
+    var ctxCustosPorMes = document.getElementById('chartCustosPorMes').getContext('2d');
+    var chartDataCustosPorMes = {
+        labels: @Html.Raw(Json.Serialize(ViewBag.ChartLabelsCustosPorMes)),
+        datasets: [{
+            label: 'Total por Mês',
+            data: @Html.Raw(Json.Serialize(ViewBag.ChartDataCustosPorMes)),
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Cor de fundo
+            borderColor: 'rgba(255, 99, 132, 1)', // Cor da borda
+            borderWidth: 1
+        }]
+    };
+
+    var myChartCustosPorMes = new Chart(ctxCustosPorMes, {
+        type: 'bar', // Tipo de gráfico (pode ser 'bar', 'line', 'pie', etc.)
+        data: chartDataCustosPorMes,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de Folga por Dia da Semana
+    var ctxFolgaPorDia = document.getElementById('chartFolgaPorDia').getContext('2d');
+    var folgasPorDiaSemanaData = @Html.Raw(ViewBag.FolgasPorDiaSemana);
+
+    var labelsFolgaPorDia = folgasPorDiaSemanaData.map(function (item) {
+        return item.DiaDaSemana;
+    });
+
+    var dataFolgaPorDia = folgasPorDiaSemanaData.map(function (item) {
+        return item.TotalFolgas;
+    });
+
+    var chartDataFolgaPorDia = {
+        labels: labelsFolgaPorDia,
+        datasets: [{
+            label: 'Total de Folgas por Dia da Semana',
+            data: dataFolgaPorDia,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Cor de fundo
+            borderColor: 'rgba(75, 192, 192, 1)', // Cor da borda
+            borderWidth: 1
+        }]
+    };
+
+    var myChartFolgaPorDia = new Chart(ctxFolgaPorDia, {
+        type: 'bar', // Tipo de gráfico (pode ser 'bar', 'line', 'pie', etc.)
+        data: chartDataFolgaPorDia,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>

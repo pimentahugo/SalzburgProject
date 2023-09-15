@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Custo>
+﻿@model IEnumerable<dynamic>
+
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Custos";
@@ -11,6 +13,7 @@
         <a asp-action="Create" class="btn btn-primary">Novo custo</a>
     </p>
     <hr />
+
     @if (TempData["Success"] != null)
     {
         <div class="alert alert-success" role="alert">
@@ -23,35 +26,106 @@
             @TempData["Error"]
         </div>
     }
-    <table id="original-table" class="table table-striped table-hover">
-        <thead class="sucess">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.Id)</th>
-                <th>@Html.DisplayNameFor(model => model.Name)</th>
-                <th>@Html.DisplayNameFor(model => model.TipoCusto)</th>
-                <th>@Html.DisplayNameFor(model => model.Data)</th>
-                <th></th>
-            </tr>
-        <tbody>
-                @foreach (var item in Model)
-                {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TipoCusto)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Data)</td>
-                    <td>
-                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-pen"></i></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-                }
-        </tbody>
-        </thead>
-    </table>
-</div>
 
+    @foreach (var anoGrupo in Model)
+    {
+        <div class="accordion" id="accordion-@anoGrupo.Ano">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-@anoGrupo.Ano">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@anoGrupo.Ano" aria-expanded="true" aria-controls="collapse-@anoGrupo.Ano">
+                        Ano @anoGrupo.Ano
+                    </button>
+                </h2>
+                <div id="collapse-@anoGrupo.Ano" class="accordion-collapse collapse show" aria-labelledby="heading-@anoGrupo.Ano">
+                    <div class="accordion-body">
+                        @foreach (var mesGrupo in anoGrupo.Meses)
+                        {
+                            <div class="accordion" id="accordion-@anoGrupo.Ano-@mesGrupo.Key">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-@anoGrupo.Ano-@mesGrupo.Key">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@anoGrupo.Ano-@mesGrupo.Key" aria-expanded="true" aria-controls="collapse-@anoGrupo.Ano-@mesGrupo.Key">
+                                            Mês @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mesGrupo.Key)
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-@anoGrupo.Ano-@mesGrupo.Key" class="accordion-collapse collapse show" aria-labelledby="heading-@anoGrupo.Ano-@mesGrupo.Key">
+                                        <div class="accordion-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nome</th>
+                                                        <th>Tipo Custo</th>
+                                                        <th>Data</th>
+                                                        <th>Tipo Pagamento</th>
+                                                        <th>Valor</th>
+                                                        <th>Parcela</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var custo in mesGrupo)
+                                                    {
+                                                        <tr>
+                                                            <td>@custo.Name</td>
+                                                            <td>@custo.TipoCusto</td>
+                                                            <td>@custo.Data.ToString("dd/MM/yyyy")</td>
+                                                            <td>@custo.TipoPagamento</td>
+                                                            <td>R$ @custo.Valor</td>
+                                                            <td>@custo.ParcelaAtual</td>
+                                                            <td>
+                                                                <a asp-action="Detail" asp-route-id="@custo.Id" class="btn btn-sm btn-info"><i class="bi bi-pen"></i></a>
+                                                                <a data-item-id="@custo.Id" data-bs-toggle="modal" data-bs-target="#excluirCustoModal" asp-route-id="@custo.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    }
+</div>
+<!-- Modal -->
+<div class="modal fade" id="excluirCustoModal" tabindex="-1" aria-labelledby="excluirCustoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excluirPixModalLabel">Confirmar exclusão de folga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Deseja excluir o custo selecionado?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <!-- Formulário para enviar a solicitação de exclusão -->
+                <form method="post" asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="custoId" value="" />
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#excluirCustoModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Botão que acionou a modal
+                var itemId = button.data('item-id'); // Obtém o valor do atributo data-item-id do botão
+                $('#custoId').attr("value", itemId); // Define o valor do input itemId com o valor obtido
+            });
+        });
+    </script>
     <script>
         var table = new DataTable('#original-table', {
             language: {

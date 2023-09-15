@@ -2,8 +2,22 @@ using Microsoft.EntityFrameworkCore;
 using SalzburgProject.Data;
 using SalzburgProject.Interface;
 using SalzburgProject.Repository;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configura a cultura padrão para pt-BR (português brasileiro)
+var cultureInfo = new CultureInfo("pt-BR");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+// Configuração da localização (cultura) para as Views
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(cultureInfo);
+    options.SupportedCultures = new List<CultureInfo> { cultureInfo };
+    options.SupportedUICultures = new List<CultureInfo> { cultureInfo };
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

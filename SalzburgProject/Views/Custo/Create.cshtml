@@ -1,0 +1,86 @@
+﻿@using SalzburgProject.Models.Enum
+
+@model Custo
+
+@{
+    ViewData["Title"] = "Cadastro de custos";
+    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("pt-BR");
+}
+<div class="container">
+    <br />
+    <h1>@ViewData["Title"]</h1>
+    <form asp-action="Create">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="control-label">Descricao do custo</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Data" class="control-label"></label>
+            <input asp-for="Data" type="date" class=" form-control" />
+            <span asp-validation-for="Data" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TipoCusto" class="control-label"></label>
+            @Html.DropDownListFor(model => model.TipoCusto, Html.GetEnumSelectList<TipoCusto>(), "Selecione um tipo de custo", new { @class = "form-control" })
+            <span asp-validation-for="TipoCusto" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TipoPagamento" class="control-label"></label>
+            @Html.DropDownListFor(model => model.TipoPagamento, Html.GetEnumSelectList<TipoPagamento>(), "Selecione um tipo de pagamento", new { @class = "form-control" })
+            <span asp-validation-for="TipoPagamento" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Parcelado" class="control-label"></label>
+            <div class="form-check">
+                <input asp-for="Parcelado" class="form-check-input" type="radio" value="true" id="parceladoSim" />
+                <label class="form-check-label">Sim</label>
+            </div>
+            <div class="form-check">
+                <input asp-for="Parcelado" class="form-check-input" type="radio" value="false" />
+                <label class="form-check-label">Não</label>
+            </div>
+            <span asp-validation-for="Parcelado" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3" id="qtdParcelamentoGroup" style="display:none;">
+            <label asp-for="QtdParcelamento" class="control-label"></label>
+            <input asp-for="QtdParcelamento" type="number" class="form-control" />
+            <span asp-validation-for="QtdParcelamento" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Valor" class="control-label"></label>
+            <input asp-for="Valor" type="number" class=" form-control" />
+            <span asp-validation-for="Valor" class="text-danger"></span>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Criar custo</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var parceladoSim = $("#parceladoSim");
+            var qtdParcelamentoGroup = $("#qtdParcelamentoGroup");
+
+            // Função para atualizar a visibilidade do campo QtdParcelamento
+            function atualizarVisibilidadeCampo() {
+                if (parceladoSim.is(":checked")) {
+                    qtdParcelamentoGroup.show(); // Mostra o campo QtdParcelamento
+                } else {
+                    qtdParcelamentoGroup.hide(); // Oculta o campo QtdParcelamento
+                }
+            }
+
+            // Adicione um ouvinte de evento para o radiobutton "Sim"
+            parceladoSim.change(atualizarVisibilidadeCampo);
+
+            // Chame a função para garantir a visibilidade inicial
+            atualizarVisibilidadeCampo();
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
